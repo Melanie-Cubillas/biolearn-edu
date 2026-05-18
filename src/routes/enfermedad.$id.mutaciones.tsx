@@ -8,7 +8,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, RadialBarChart, RadialBar, Cell,
 } from "recharts";
-import { ArrowLeft, Beaker, Compass, Search, Target, Telescope, Microscope, FileSearch, Activity, Sparkles } from "lucide-react";
+import { ArrowLeft, Beaker, Compass, Search, Target, Telescope, Microscope, FileSearch, Activity, Sparkles, Play, Loader2, RotateCcw, Dna } from "lucide-react";
 
 export const Route = createFileRoute("/enfermedad/$id/mutaciones")({
   head: () => ({ meta: [{ title: "Reconocer mutaciones · BioLearn" }] }),
@@ -50,7 +50,105 @@ function Page() {
 }
 
 function GuidedMode({ disease: d }: { disease: typeof diseases[DiseaseId] }) {
-  const analysis = useMemo(() => analyzeSequences(d.reference, d.sample), [d]);
+  const [refSeq, setRefSeq] = useState(d.reference);
+  const [sampleSeq, setSampleSeq] = useState(d.sample);
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<{ ref: string; sample: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleRun = () => {
+    const r = refSeq.toUpperCase().replace(/\s+/g, "");
+    const s = sampleSeq.toUpperCase().replace(/\s+/g, "");
+    if (!/^[ATCG]+$/.test(r) || !/^[ATCG]+$/.test(s)) {
+      setError("Ambas secuencias deben contener solo A, T, C, G.");
+      return;
+    }
+    if (r.length < 3 || s.length < 3) {
+      setError("Cada secuencia debe tener al menos 3 nucleótidos.");
+      return;
+    }
+    setError(null);
+    setResult(null);
+    setRunning(true);
+    setTimeout(() => {
+      setResult({ ref: r, sample: s });
+      setRunning(false);
+    }, 1200);
+  };
+
+  const handleLoadExample = () => {
+    setRefSeq(d.reference);
+    setSampleSeq(d.sample);
+    setError(null);
+    setResult(null);
+  };
+
+  const handleReset = () => {
+    setRefSeq("");
+    setSampleSeq("");
+    setResult(null);
+    setError(null);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
+        <div className="flex items-center gap-2 mb-4">
+          <Microscope className="w-4 h-4 text-primary" />
+          <h2 className="font-bold">Entrada · Comparar dos secuencias</h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Secuencia de referencia</label>
+            <textarea value={refSeq} onChange={(e) => setRefSeq(e.target.value)} spellCheck={false} className="w-full h-24 mt-1 rounded-xl border border-border bg-muted p-3 font-mono-bio text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-y" />
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Secuencia muestra</label>
+            <textarea value={sampleSeq} onChange={(e) => setSampleSeq(e.target.value)} spellCheck={false} className="w-full h-24 mt-1 rounded-xl border border-border bg-muted p-3 font-mono-bio text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-y" />
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 mt-4 items-center justify-between">
+          <div className="text-xs text-muted-foreground">
+            Ref: <span className="font-bold text-foreground">{refSeq.replace(/\s+/g, "").length}</span> nt · Muestra: <span className="font-bold text-foreground">{sampleSeq.replace(/\s+/g, "").length}</span> nt
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <button onClick={handleLoadExample} className="h-10 px-4 rounded-xl bg-muted text-sm font-semibold hover:bg-muted/70 transition flex items-center gap-2">
+              <Dna className="w-4 h-4" /> Cargar ejemplo ({d.name})
+            </button>
+            <button onClick={handleReset} className="h-10 px-4 rounded-xl bg-muted text-sm font-semibold hover:bg-muted/70 transition flex items-center gap-2">
+              <RotateCcw className="w-4 h-4" /> Limpiar
+            </button>
+            <button onClick={handleRun} disabled={running} className="h-10 px-5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition flex items-center gap-2 shadow-soft disabled:opacity-60">
+              {running ? <><Loader2 className="w-4 h-4 animate-spin" /> Analizando…</> : <><Play className="w-4 h-4" /> Analizar mutaciones</>}
+            </button>
+          </div>
+        </div>
+        {error && <p className="mt-3 text-xs text-bio-red font-semibold">{error}</p>}
+      </div>
+
+      {running && (
+        <div className="rounded-3xl border border-border bg-card p-10 shadow-soft text-center">
+          <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto mb-3" />
+          <div className="font-bold">Ejecutando pipeline de alineamiento…</div>
+          <p className="text-xs text-muted-foreground mt-1">Comparando nucleótidos, detectando sustituciones, inserciones y deleciones</p>
+        </div>
+      )}
+
+      {!running && !result && (
+        <div className="rounded-3xl border border-dashed border-border bg-muted/40 p-10 text-center">
+          <Microscope className="w-10 h-10 text-muted-foreground/60 mx-auto mb-3" />
+          <div className="font-bold">Aún no hay análisis</div>
+          <p className="text-xs text-muted-foreground mt-1">Ingresa dos secuencias y pulsa "Analizar mutaciones" para ver el reporte detallado.</p>
+        </div>
+      )}
+
+      {!running && result && <GuidedResults disease={d} refSeq={result.ref} sampleSeq={result.sample} />}
+    </div>
+  );
+}
+
+function GuidedResults({ disease: d, refSeq, sampleSeq }: { disease: typeof diseases[DiseaseId]; refSeq: string; sampleSeq: string }) {
+  const analysis = useMemo(() => analyzeSequences(refSeq, sampleSeq), [refSeq, sampleSeq]);
   const eValue = (Math.pow(10, -8) * (100 - analysis.similarity + 1)).toExponential(2);
   const refHL: Record<number, any> = {};
   const sampleHL: Record<number, any> = {};
@@ -61,10 +159,9 @@ function GuidedMode({ disease: d }: { disease: typeof diseases[DiseaseId] }) {
     else if (m.type === "insertion") { sampleHL[si] = "insertion"; si++; }
     else if (m.type === "deletion") { refHL[ri] = "deletion"; ri++; }
   }
-  // mark CAG repeats blue in expansion type
   if (d.mutationType === "expansion") {
-    for (let i = 0; i + 3 <= d.sample.length; i += 3) {
-      if (d.sample.slice(i, i + 3) === "CAG") { sampleHL[i] = "repeat"; sampleHL[i + 1] = "repeat"; sampleHL[i + 2] = "repeat"; }
+    for (let i = 0; i + 3 <= sampleSeq.length; i += 3) {
+      if (sampleSeq.slice(i, i + 3) === "CAG") { sampleHL[i] = "repeat"; sampleHL[i + 1] = "repeat"; sampleHL[i + 2] = "repeat"; }
     }
   }
 
@@ -78,7 +175,6 @@ function GuidedMode({ disease: d }: { disease: typeof diseases[DiseaseId] }) {
 
   return (
     <div className="space-y-6">
-      {/* Top stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Gauge value={analysis.similarity} label="Similitud" tone="oklch(0.65 0.2 255)" />
         <StatBox value={analysis.subs.toString()} label="Sustituciones" sub="cambios de base" tone="bg-pastel-pink text-bio-red" />
@@ -93,12 +189,12 @@ function GuidedMode({ disease: d }: { disease: typeof diseases[DiseaseId] }) {
           <div className="space-y-5">
             <div>
               <div className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-1">Referencia</div>
-              <NucleotideRow sequence={d.reference} highlights={refHL} />
+              <NucleotideRow sequence={refSeq} highlights={refHL} />
             </div>
             <AlignBar mutations={analysis.mutations} />
             <div>
               <div className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-1">Muestra</div>
-              <NucleotideRow sequence={d.sample} highlights={sampleHL} />
+              <NucleotideRow sequence={sampleSeq} highlights={sampleHL} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3 mt-6 pt-5 border-t border-border text-xs">
@@ -122,7 +218,6 @@ function GuidedMode({ disease: d }: { disease: typeof diseases[DiseaseId] }) {
         </div>
       </div>
 
-      {/* Distribution of mutations + repeat counter */}
       <div className="grid lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 rounded-3xl border border-border bg-card p-6 shadow-soft">
           <h3 className="font-bold mb-1 flex items-center gap-2"><Activity className="w-4 h-4 text-bio-blue" /> Distribución de mutaciones por posición</h3>
@@ -136,27 +231,26 @@ function GuidedMode({ disease: d }: { disease: typeof diseases[DiseaseId] }) {
           <div className="flex items-center justify-center">
             <div className="relative w-44 h-44">
               <ResponsiveContainer width="100%" height="100%">
-                <RadialBarChart innerRadius="70%" outerRadius="100%" data={[{ name: "r", value: Math.min(100, countCAG(d.sample) * 10), fill: "oklch(0.58 0.2 255)" }]} startAngle={90} endAngle={-270}>
+                <RadialBarChart innerRadius="70%" outerRadius="100%" data={[{ name: "r", value: Math.min(100, countCAG(sampleSeq) * 10), fill: "oklch(0.58 0.2 255)" }]} startAngle={90} endAngle={-270}>
                   <RadialBar background={{ fill: "oklch(0.95 0.03 255)" }} dataKey="value" cornerRadius={20} />
                 </RadialBarChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-3xl font-extrabold text-bio-blue">{countCAG(d.sample)}</div>
+                <div className="text-3xl font-extrabold text-bio-blue">{countCAG(sampleSeq)}</div>
                 <div className="text-[10px] uppercase tracking-widest text-muted-foreground">CAG repeats</div>
               </div>
             </div>
           </div>
           <p className="text-xs text-center text-muted-foreground mt-3">
-            Referencia: <span className="font-bold text-foreground">{countCAG(d.reference)}</span> · Muestra: <span className="font-bold text-bio-blue">{countCAG(d.sample)}</span>
+            Referencia: <span className="font-bold text-foreground">{countCAG(refSeq)}</span> · Muestra: <span className="font-bold text-bio-blue">{countCAG(sampleSeq)}</span>
           </p>
         </div>
       </div>
 
-      {/* DNA helix + interpretation */}
       <div className="grid lg:grid-cols-3 gap-5">
         <div className="rounded-3xl border border-border bg-gradient-purple p-6 shadow-soft flex items-center justify-center">
           <div className="w-40 h-64">
-            <DnaHelix className="w-full h-full animate-spin-slow" highlightPos={Math.floor(d.reference.length / 6)} />
+            <DnaHelix className="w-full h-full animate-spin-slow" highlightPos={Math.floor(refSeq.length / 6)} />
           </div>
         </div>
         <div className="lg:col-span-2 rounded-3xl border border-border bg-card p-6 shadow-soft">
