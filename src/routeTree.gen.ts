@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AprendeRouteImport } from './routes/aprende'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EnfermedadIdRouteImport } from './routes/enfermedad.$id'
+import { Route as EnfermedadIdTranscripcionRouteImport } from './routes/enfermedad.$id.transcripcion'
+import { Route as EnfermedadIdTraduccionRouteImport } from './routes/enfermedad.$id.traduccion'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -28,35 +31,80 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnfermedadIdRoute = EnfermedadIdRouteImport.update({
+  id: '/enfermedad/$id',
+  path: '/enfermedad/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnfermedadIdTranscripcionRoute =
+  EnfermedadIdTranscripcionRouteImport.update({
+    id: '/transcripcion',
+    path: '/transcripcion',
+    getParentRoute: () => EnfermedadIdRoute,
+  } as any)
+const EnfermedadIdTraduccionRoute = EnfermedadIdTraduccionRouteImport.update({
+  id: '/traduccion',
+  path: '/traduccion',
+  getParentRoute: () => EnfermedadIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aprende': typeof AprendeRoute
   '/dashboard': typeof DashboardRoute
+  '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
+  '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aprende': typeof AprendeRoute
   '/dashboard': typeof DashboardRoute
+  '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
+  '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aprende': typeof AprendeRoute
   '/dashboard': typeof DashboardRoute
+  '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
+  '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/aprende' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/aprende'
+    | '/dashboard'
+    | '/enfermedad/$id'
+    | '/enfermedad/$id/traduccion'
+    | '/enfermedad/$id/transcripcion'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/aprende' | '/dashboard'
-  id: '__root__' | '/' | '/aprende' | '/dashboard'
+  to:
+    | '/'
+    | '/aprende'
+    | '/dashboard'
+    | '/enfermedad/$id'
+    | '/enfermedad/$id/traduccion'
+    | '/enfermedad/$id/transcripcion'
+  id:
+    | '__root__'
+    | '/'
+    | '/aprende'
+    | '/dashboard'
+    | '/enfermedad/$id'
+    | '/enfermedad/$id/traduccion'
+    | '/enfermedad/$id/transcripcion'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AprendeRoute: typeof AprendeRoute
   DashboardRoute: typeof DashboardRoute
+  EnfermedadIdRoute: typeof EnfermedadIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -82,13 +130,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/enfermedad/$id': {
+      id: '/enfermedad/$id'
+      path: '/enfermedad/$id'
+      fullPath: '/enfermedad/$id'
+      preLoaderRoute: typeof EnfermedadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enfermedad/$id/transcripcion': {
+      id: '/enfermedad/$id/transcripcion'
+      path: '/transcripcion'
+      fullPath: '/enfermedad/$id/transcripcion'
+      preLoaderRoute: typeof EnfermedadIdTranscripcionRouteImport
+      parentRoute: typeof EnfermedadIdRoute
+    }
+    '/enfermedad/$id/traduccion': {
+      id: '/enfermedad/$id/traduccion'
+      path: '/traduccion'
+      fullPath: '/enfermedad/$id/traduccion'
+      preLoaderRoute: typeof EnfermedadIdTraduccionRouteImport
+      parentRoute: typeof EnfermedadIdRoute
+    }
   }
 }
+
+interface EnfermedadIdRouteChildren {
+  EnfermedadIdTraduccionRoute: typeof EnfermedadIdTraduccionRoute
+  EnfermedadIdTranscripcionRoute: typeof EnfermedadIdTranscripcionRoute
+}
+
+const EnfermedadIdRouteChildren: EnfermedadIdRouteChildren = {
+  EnfermedadIdTraduccionRoute: EnfermedadIdTraduccionRoute,
+  EnfermedadIdTranscripcionRoute: EnfermedadIdTranscripcionRoute,
+}
+
+const EnfermedadIdRouteWithChildren = EnfermedadIdRoute._addFileChildren(
+  EnfermedadIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AprendeRoute: AprendeRoute,
   DashboardRoute: DashboardRoute,
+  EnfermedadIdRoute: EnfermedadIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
