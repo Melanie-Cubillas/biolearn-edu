@@ -6,7 +6,7 @@ import { NucleotideRow } from "@/components/sequence-view";
 import { DnaHelix } from "@/components/dna-visuals";
 import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, RadialBarChart, RadialBar,
+  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, RadialBarChart, RadialBar, Cell,
 } from "recharts";
 import { ArrowLeft, Beaker, Compass, Search, Target, Telescope, Microscope, FileSearch, Activity, Sparkles } from "lucide-react";
 
