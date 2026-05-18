@@ -249,7 +249,7 @@ function LegendDot({ color, label }: { color: string; label: string }) {
 function ModuleButton({ to, id, title, desc, icon: Icon, tone, iconBg, featured }: any) {
   return (
     <Link
-      to={to} params={{ id }}
+      to={to as any} params={{ id } as any}
       className={`group relative overflow-hidden rounded-3xl border ${featured ? "border-primary/30" : "border-border"} bg-card p-6 hover:-translate-y-1 transition-all shadow-soft hover:shadow-glow-purple`}
     >
       <div className={`absolute inset-0 ${tone} opacity-40 group-hover:opacity-70 transition-opacity`} />
