@@ -352,7 +352,7 @@ function MutationMap({ mutations }: { mutations: ReturnType<typeof analyzeSequen
     </ResponsiveContainer>
   );
 }
-import { Cell } from "recharts";
+
 
 function Field({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
