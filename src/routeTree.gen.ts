@@ -9,13 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TutorialesRouteImport } from './routes/tutoriales'
+import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AprendeRouteImport } from './routes/aprende'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnfermedadIdRouteImport } from './routes/enfermedad.$id'
 import { Route as EnfermedadIdTranscripcionRouteImport } from './routes/enfermedad.$id.transcripcion'
 import { Route as EnfermedadIdTraduccionRouteImport } from './routes/enfermedad.$id.traduccion'
+import { Route as EnfermedadIdMutacionesRouteImport } from './routes/enfermedad.$id.mutaciones'
 
+const TutorialesRoute = TutorialesRouteImport.update({
+  id: '/tutoriales',
+  path: '/tutoriales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -47,12 +60,20 @@ const EnfermedadIdTraduccionRoute = EnfermedadIdTraduccionRouteImport.update({
   path: '/traduccion',
   getParentRoute: () => EnfermedadIdRoute,
 } as any)
+const EnfermedadIdMutacionesRoute = EnfermedadIdMutacionesRouteImport.update({
+  id: '/mutaciones',
+  path: '/mutaciones',
+  getParentRoute: () => EnfermedadIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aprende': typeof AprendeRoute
   '/dashboard': typeof DashboardRoute
+  '/quiz': typeof QuizRoute
+  '/tutoriales': typeof TutorialesRoute
   '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/mutaciones': typeof EnfermedadIdMutacionesRoute
   '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
   '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
@@ -60,7 +81,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aprende': typeof AprendeRoute
   '/dashboard': typeof DashboardRoute
+  '/quiz': typeof QuizRoute
+  '/tutoriales': typeof TutorialesRoute
   '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/mutaciones': typeof EnfermedadIdMutacionesRoute
   '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
   '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
@@ -69,7 +93,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/aprende': typeof AprendeRoute
   '/dashboard': typeof DashboardRoute
+  '/quiz': typeof QuizRoute
+  '/tutoriales': typeof TutorialesRoute
   '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/mutaciones': typeof EnfermedadIdMutacionesRoute
   '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
   '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
@@ -79,7 +106,10 @@ export interface FileRouteTypes {
     | '/'
     | '/aprende'
     | '/dashboard'
+    | '/quiz'
+    | '/tutoriales'
     | '/enfermedad/$id'
+    | '/enfermedad/$id/mutaciones'
     | '/enfermedad/$id/traduccion'
     | '/enfermedad/$id/transcripcion'
   fileRoutesByTo: FileRoutesByTo
@@ -87,7 +117,10 @@ export interface FileRouteTypes {
     | '/'
     | '/aprende'
     | '/dashboard'
+    | '/quiz'
+    | '/tutoriales'
     | '/enfermedad/$id'
+    | '/enfermedad/$id/mutaciones'
     | '/enfermedad/$id/traduccion'
     | '/enfermedad/$id/transcripcion'
   id:
@@ -95,7 +128,10 @@ export interface FileRouteTypes {
     | '/'
     | '/aprende'
     | '/dashboard'
+    | '/quiz'
+    | '/tutoriales'
     | '/enfermedad/$id'
+    | '/enfermedad/$id/mutaciones'
     | '/enfermedad/$id/traduccion'
     | '/enfermedad/$id/transcripcion'
   fileRoutesById: FileRoutesById
@@ -104,11 +140,27 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AprendeRoute: typeof AprendeRoute
   DashboardRoute: typeof DashboardRoute
+  QuizRoute: typeof QuizRoute
+  TutorialesRoute: typeof TutorialesRoute
   EnfermedadIdRoute: typeof EnfermedadIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tutoriales': {
+      id: '/tutoriales'
+      path: '/tutoriales'
+      fullPath: '/tutoriales'
+      preLoaderRoute: typeof TutorialesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -151,15 +203,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnfermedadIdTraduccionRouteImport
       parentRoute: typeof EnfermedadIdRoute
     }
+    '/enfermedad/$id/mutaciones': {
+      id: '/enfermedad/$id/mutaciones'
+      path: '/mutaciones'
+      fullPath: '/enfermedad/$id/mutaciones'
+      preLoaderRoute: typeof EnfermedadIdMutacionesRouteImport
+      parentRoute: typeof EnfermedadIdRoute
+    }
   }
 }
 
 interface EnfermedadIdRouteChildren {
+  EnfermedadIdMutacionesRoute: typeof EnfermedadIdMutacionesRoute
   EnfermedadIdTraduccionRoute: typeof EnfermedadIdTraduccionRoute
   EnfermedadIdTranscripcionRoute: typeof EnfermedadIdTranscripcionRoute
 }
 
 const EnfermedadIdRouteChildren: EnfermedadIdRouteChildren = {
+  EnfermedadIdMutacionesRoute: EnfermedadIdMutacionesRoute,
   EnfermedadIdTraduccionRoute: EnfermedadIdTraduccionRoute,
   EnfermedadIdTranscripcionRoute: EnfermedadIdTranscripcionRoute,
 }
@@ -172,6 +233,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AprendeRoute: AprendeRoute,
   DashboardRoute: DashboardRoute,
+  QuizRoute: QuizRoute,
+  TutorialesRoute: TutorialesRoute,
   EnfermedadIdRoute: EnfermedadIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
