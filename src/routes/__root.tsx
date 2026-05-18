@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Bio-Learn" },
+      { name: "description", content: "BioLearn Sequence Explorer is an educational web platform for understanding genetics and bioinformatics." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Bio-Learn" },
+      { property: "og:description", content: "BioLearn Sequence Explorer is an educational web platform for understanding genetics and bioinformatics." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Bio-Learn" },
+      { name: "twitter:description", content: "BioLearn Sequence Explorer is an educational web platform for understanding genetics and bioinformatics." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a9f75f16-2660-421b-b974-5a28e31abc3c/id-preview-0963e0c4--6284291e-2d46-4c5b-bf97-f96accd8a70d.lovable.app-1779086643669.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a9f75f16-2660-421b-b974-5a28e31abc3c/id-preview-0963e0c4--6284291e-2d46-4c5b-bf97-f96accd8a70d.lovable.app-1779086643669.png" },
     ],
     links: [
       {
