@@ -8,7 +8,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, RadialBarChart, RadialBar, Cell,
 } from "recharts";
-import { ArrowLeft, Beaker, Compass, Search, Target, Telescope, Microscope, FileSearch, Activity, Sparkles } from "lucide-react";
+import { ArrowLeft, Beaker, Compass, Search, Target, Telescope, Microscope, FileSearch, Activity, Sparkles, Play, Loader2, RotateCcw, Dna } from "lucide-react";
 
 export const Route = createFileRoute("/enfermedad/$id/mutaciones")({
   head: () => ({ meta: [{ title: "Reconocer mutaciones · BioLearn" }] }),
