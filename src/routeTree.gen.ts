@@ -9,38 +9,172 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TutorialesRouteImport } from './routes/tutoriales'
+import { Route as QuizRouteImport } from './routes/quiz'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AprendeRouteImport } from './routes/aprende'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EnfermedadIdRouteImport } from './routes/enfermedad.$id'
+import { Route as EnfermedadIdTranscripcionRouteImport } from './routes/enfermedad.$id.transcripcion'
+import { Route as EnfermedadIdTraduccionRouteImport } from './routes/enfermedad.$id.traduccion'
+import { Route as EnfermedadIdMutacionesRouteImport } from './routes/enfermedad.$id.mutaciones'
 
+const TutorialesRoute = TutorialesRouteImport.update({
+  id: '/tutoriales',
+  path: '/tutoriales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AprendeRoute = AprendeRouteImport.update({
+  id: '/aprende',
+  path: '/aprende',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnfermedadIdRoute = EnfermedadIdRouteImport.update({
+  id: '/enfermedad/$id',
+  path: '/enfermedad/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnfermedadIdTranscripcionRoute =
+  EnfermedadIdTranscripcionRouteImport.update({
+    id: '/transcripcion',
+    path: '/transcripcion',
+    getParentRoute: () => EnfermedadIdRoute,
+  } as any)
+const EnfermedadIdTraduccionRoute = EnfermedadIdTraduccionRouteImport.update({
+  id: '/traduccion',
+  path: '/traduccion',
+  getParentRoute: () => EnfermedadIdRoute,
+} as any)
+const EnfermedadIdMutacionesRoute = EnfermedadIdMutacionesRouteImport.update({
+  id: '/mutaciones',
+  path: '/mutaciones',
+  getParentRoute: () => EnfermedadIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aprende': typeof AprendeRoute
+  '/dashboard': typeof DashboardRoute
+  '/quiz': typeof QuizRoute
+  '/tutoriales': typeof TutorialesRoute
+  '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/mutaciones': typeof EnfermedadIdMutacionesRoute
+  '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
+  '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/aprende': typeof AprendeRoute
+  '/dashboard': typeof DashboardRoute
+  '/quiz': typeof QuizRoute
+  '/tutoriales': typeof TutorialesRoute
+  '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/mutaciones': typeof EnfermedadIdMutacionesRoute
+  '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
+  '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aprende': typeof AprendeRoute
+  '/dashboard': typeof DashboardRoute
+  '/quiz': typeof QuizRoute
+  '/tutoriales': typeof TutorialesRoute
+  '/enfermedad/$id': typeof EnfermedadIdRouteWithChildren
+  '/enfermedad/$id/mutaciones': typeof EnfermedadIdMutacionesRoute
+  '/enfermedad/$id/traduccion': typeof EnfermedadIdTraduccionRoute
+  '/enfermedad/$id/transcripcion': typeof EnfermedadIdTranscripcionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/aprende'
+    | '/dashboard'
+    | '/quiz'
+    | '/tutoriales'
+    | '/enfermedad/$id'
+    | '/enfermedad/$id/mutaciones'
+    | '/enfermedad/$id/traduccion'
+    | '/enfermedad/$id/transcripcion'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/aprende'
+    | '/dashboard'
+    | '/quiz'
+    | '/tutoriales'
+    | '/enfermedad/$id'
+    | '/enfermedad/$id/mutaciones'
+    | '/enfermedad/$id/traduccion'
+    | '/enfermedad/$id/transcripcion'
+  id:
+    | '__root__'
+    | '/'
+    | '/aprende'
+    | '/dashboard'
+    | '/quiz'
+    | '/tutoriales'
+    | '/enfermedad/$id'
+    | '/enfermedad/$id/mutaciones'
+    | '/enfermedad/$id/traduccion'
+    | '/enfermedad/$id/transcripcion'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AprendeRoute: typeof AprendeRoute
+  DashboardRoute: typeof DashboardRoute
+  QuizRoute: typeof QuizRoute
+  TutorialesRoute: typeof TutorialesRoute
+  EnfermedadIdRoute: typeof EnfermedadIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tutoriales': {
+      id: '/tutoriales'
+      path: '/tutoriales'
+      fullPath: '/tutoriales'
+      preLoaderRoute: typeof TutorialesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aprende': {
+      id: '/aprende'
+      path: '/aprende'
+      fullPath: '/aprende'
+      preLoaderRoute: typeof AprendeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +182,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/enfermedad/$id': {
+      id: '/enfermedad/$id'
+      path: '/enfermedad/$id'
+      fullPath: '/enfermedad/$id'
+      preLoaderRoute: typeof EnfermedadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enfermedad/$id/transcripcion': {
+      id: '/enfermedad/$id/transcripcion'
+      path: '/transcripcion'
+      fullPath: '/enfermedad/$id/transcripcion'
+      preLoaderRoute: typeof EnfermedadIdTranscripcionRouteImport
+      parentRoute: typeof EnfermedadIdRoute
+    }
+    '/enfermedad/$id/traduccion': {
+      id: '/enfermedad/$id/traduccion'
+      path: '/traduccion'
+      fullPath: '/enfermedad/$id/traduccion'
+      preLoaderRoute: typeof EnfermedadIdTraduccionRouteImport
+      parentRoute: typeof EnfermedadIdRoute
+    }
+    '/enfermedad/$id/mutaciones': {
+      id: '/enfermedad/$id/mutaciones'
+      path: '/mutaciones'
+      fullPath: '/enfermedad/$id/mutaciones'
+      preLoaderRoute: typeof EnfermedadIdMutacionesRouteImport
+      parentRoute: typeof EnfermedadIdRoute
+    }
   }
 }
 
+interface EnfermedadIdRouteChildren {
+  EnfermedadIdMutacionesRoute: typeof EnfermedadIdMutacionesRoute
+  EnfermedadIdTraduccionRoute: typeof EnfermedadIdTraduccionRoute
+  EnfermedadIdTranscripcionRoute: typeof EnfermedadIdTranscripcionRoute
+}
+
+const EnfermedadIdRouteChildren: EnfermedadIdRouteChildren = {
+  EnfermedadIdMutacionesRoute: EnfermedadIdMutacionesRoute,
+  EnfermedadIdTraduccionRoute: EnfermedadIdTraduccionRoute,
+  EnfermedadIdTranscripcionRoute: EnfermedadIdTranscripcionRoute,
+}
+
+const EnfermedadIdRouteWithChildren = EnfermedadIdRoute._addFileChildren(
+  EnfermedadIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AprendeRoute: AprendeRoute,
+  DashboardRoute: DashboardRoute,
+  QuizRoute: QuizRoute,
+  TutorialesRoute: TutorialesRoute,
+  EnfermedadIdRoute: EnfermedadIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
